@@ -14,31 +14,31 @@ import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
 
-@Path("/clients")
+@Path("/clientDetails")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Blocking
 class ClientDetailsResource(private val service: ClientDetailsService) {
-
     @POST
     @Path("/create")
-    suspend fun create(client: ClientDetails): Response {
+    fun create(client: ClientDetails): Response {
         val created = service.create(client)
         return Response.status(Response.Status.CREATED).entity(created).build()
     }
 
     @GET
     @Path("/get/list-all")
-    suspend fun listAll(): List<ClientDetails> = service.listAll()
+    fun listAll(): List<ClientDetails> = service.listAll()
 
     @GET
     @Path("/{id}")
-    suspend fun getById(@PathParam("id") id: Long): ClientDetails? =
-        service.findById(id)
+    fun getById(
+        @PathParam("id") id: Long,
+    ): ClientDetails? = service.findById(id)
 
     @PUT
     @Path("/update/{id}")
-    suspend fun update(
+    fun update(
         @PathParam("id") id: Long,
         client: ClientDetails,
     ): Response {
@@ -48,7 +48,9 @@ class ClientDetailsResource(private val service: ClientDetailsService) {
 
     @DELETE
     @Path("/delete/{id}")
-    suspend fun delete(@PathParam("id") id: Long): Response {
+    fun delete(
+        @PathParam("id") id: Long,
+    ): Response {
         service.deleteById(id)
         return Response.noContent().build()
     }

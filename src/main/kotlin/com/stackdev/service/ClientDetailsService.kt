@@ -8,18 +8,18 @@ import jakarta.transaction.Transactional
 @ApplicationScoped
 class ClientDetailsService(private val repository: ClientDetailsRepository) {
     @Transactional
-    suspend fun create(client: ClientDetails): ClientDetails =
+    fun create(client: ClientDetails): ClientDetails =
         run {
             repository.persist(client)
             client
         }
 
-    suspend fun listAll(): List<ClientDetails> = repository.listAll()
+    fun listAll(): List<ClientDetails> = repository.listAll()
 
-    suspend fun findById(id: Long): ClientDetails? = repository.findById(id)
+    fun findById(id: Long): ClientDetails? = repository.findById(id)
 
     @Transactional
-    suspend fun update(
+    fun update(
         id: Long,
         updated: ClientDetails,
     ): ClientDetails =
@@ -39,5 +39,10 @@ class ClientDetailsService(private val repository: ClientDetailsRepository) {
         }
 
     @Transactional
-    suspend fun deleteById(id: Long): Boolean = repository.deleteById(id)
+    fun deleteById(id: Long) {
+        val deleted = repository.deleteById(id)
+        if (!deleted) {
+            throw jakarta.ws.rs.NotFoundException("Client with id $id not found")
+        }
+    }
 }
