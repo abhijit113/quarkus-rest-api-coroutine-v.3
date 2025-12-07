@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: stackdev-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: stackdev-quarkus-app
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/postgres
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: password
+      QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION: drop-and-create
+
+volumes:
+  pgdata:
